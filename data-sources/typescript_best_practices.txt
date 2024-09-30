@@ -1,0 +1,276 @@
+
+Title: TypeScript Best Practices and Software Design Principles with Code Examples
+
+1. Strict Typing
+Best Practice: Always enable strict mode in your tsconfig.json file. This ensures stronger type checking.
+Example (tsconfig.json):
+```json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+Pitfall: Avoid overusing the 'any' type.
+Bad Example:
+```typescript
+let data: any = '123';
+data = 123; // No error, but defeats the purpose of TypeScript
+```
+Good Example:
+```typescript
+let data: string = '123'; // Proper type enforcement
+```
+
+2. Use Interfaces Over Types
+Best Practice: Prefer using interfaces when defining the shape of objects. Interfaces are extendable and provide better structure.
+Good Example:
+```typescript
+interface User {
+  name: string;
+  age: number;
+}
+```
+Pitfall: Reserve 'type' for unions or more complex types.
+Bad Example:
+```typescript
+type User = { name: string; age: number; } // Works, but less flexible
+```
+
+3. DRY (Don't Repeat Yourself)
+Best Practice: Avoid repetition by centralizing logic.
+Good Example:
+```typescript
+function calculateArea(width: number, height: number): number {
+  return width * height;
+}
+```
+Pitfall: Repeating logic.
+Bad Example:
+```typescript
+let area1 = 10 * 20;
+let area2 = 15 * 30; // Repetition of logic
+```
+
+4. SOLID Principles
+
+   a. **Single Responsibility Principle (SRP)**
+   Best Practice: Every class or function should have a single responsibility.
+   Good Example:
+   ```typescript
+   class UserService {
+       getUserDetails() { /* ... */ }
+   }
+   class UserAuthentication {
+       login() { /* ... */ }
+   }
+   ```
+   Pitfall: Avoid combining multiple responsibilities in one class.
+   Bad Example:
+   ```typescript
+   class UserService {
+       getUserDetails() { /* ... */ }
+       login() { /* ... */ } // Violates SRP
+   }
+   ```
+   
+   b. **Open/Closed Principle (OCP)**
+   Best Practice: Classes should be open for extension but closed for modification.
+   Good Example:
+   ```typescript
+   interface Shape {
+       area(): number;
+   }
+   class Rectangle implements Shape {
+       constructor(private width: number, private height: number) {}
+       area(): number { return this.width * this.height; }
+   }
+   class Circle implements Shape {
+       constructor(private radius: number) {}
+       area(): number { return Math.PI * this.radius * this.radius; }
+   }
+   ```
+   Pitfall: Direct modification instead of extension.
+   Bad Example:
+   ```typescript
+   class Shape {
+       areaRectangle(width: number, height: number) { return width * height; }
+       areaCircle(radius: number) { return Math.PI * radius * radius; }
+   }
+   ```
+
+   c. **Liskov Substitution Principle (LSP)**
+   Best Practice: Subtypes should be substitutable for their base types.
+   Good Example:
+   ```typescript
+   class Bird {
+       fly() { console.log("Flying"); }
+   }
+   class Sparrow extends Bird {}
+   let bird: Bird = new Sparrow(); // Works fine
+   ```
+   Pitfall: Violating substitution.
+   Bad Example:
+   ```typescript
+   class Bird {
+       fly() { console.log("Flying"); }
+   }
+   class Penguin extends Bird {
+       fly() { throw new Error("Penguins can't fly!"); } // Violates LSP
+   }
+   ```
+
+   d. **Interface Segregation Principle (ISP)**
+   Best Practice: Clients should not be forced to implement interfaces they don’t use.
+   Good Example:
+   ```typescript
+   interface Worker {
+       work(): void;
+   }
+   interface Eater {
+       eat(): void;
+   }
+   class Robot implements Worker {
+       work() { console.log("Working"); }
+   }
+   class Human implements Worker, Eater {
+       work() { console.log("Working"); }
+       eat() { console.log("Eating"); }
+   }
+   ```
+   Pitfall: Large, bloated interfaces.
+   Bad Example:
+   ```typescript
+   interface Worker {
+       work(): void;
+       eat(): void; // Robot shouldn't need to implement this
+   }
+   class Robot implements Worker {
+       work() { console.log("Working"); }
+       eat() { /* Unnecessary */ }
+   }
+   ```
+
+   e. **Dependency Inversion Principle (DIP)**
+   Best Practice: High-level modules should depend on abstractions.
+   Good Example:
+   ```typescript
+   interface Logger {
+       log(message: string): void;
+   }
+   class ConsoleLogger implements Logger {
+       log(message: string) { console.log(message); }
+   }
+   class Application {
+       constructor(private logger: Logger) {}
+       run() { this.logger.log("App is running"); }
+   }
+   ```
+   Pitfall: High-level modules depending on low-level modules.
+   Bad Example:
+   ```typescript
+   class Application {
+       run() { console.log("App is running"); } // Direct dependency on console logging
+   }
+   ```
+
+5. Clean Code - Meaningful Names
+Best Practice: Use descriptive and meaningful names.
+Good Example:
+```typescript
+let maxUsers = 100;
+```
+Pitfall: Using unclear or short names.
+Bad Example:
+```typescript
+let x = 100; // What does 'x' represent?
+```
+
+6. Avoid Deep Nesting
+Best Practice: Keep nesting to a minimum.
+Good Example:
+```typescript
+if (condition) {
+    execute();
+}
+```
+Pitfall: Deeply nested code.
+Bad Example:
+```typescript
+if (condition) {
+    if (anotherCondition) {
+        if (yetAnotherCondition) {
+            execute();
+        }
+    }
+}
+```
+
+7. Prefer Functional Programming Paradigms
+Best Practice: Use immutability and pure functions.
+Good Example:
+```typescript
+const double = (x: number) => x * 2; // Pure function
+```
+Pitfall: Functions with side effects.
+Bad Example:
+```typescript
+let counter = 0;
+const incrementCounter = () => counter++; // Side effect
+```
+
+8. Use Readonly for Immutable Data
+Best Practice: Use `readonly` for properties that shouldn’t be modified.
+Good Example:
+```typescript
+interface User {
+    readonly id: number;
+    name: string;
+}
+```
+Pitfall: Failing to use `readonly`.
+Bad Example:
+```typescript
+interface User {
+    id: number;
+    name: string;
+}
+```
+
+9. Keep Functions Small
+Best Practice: Break large functions into smaller, single-purpose ones.
+Good Example:
+```typescript
+function calculateTotalPrice(price: number, tax: number): number {
+    return price + calculateTax(tax);
+}
+function calculateTax(tax: number): number {
+    return tax * 0.2;
+}
+```
+Pitfall: Large functions with multiple responsibilities.
+Bad Example:
+```typescript
+function calculateTotalPrice(price: number, tax: number): number {
+    const taxAmount = tax * 0.2;
+    return price + taxAmount;
+}
+```
+
+10. Use Type Guards and Type Inference
+Best Practice: Use type inference and guards to narrow down types.
+Good Example:
+```typescript
+function printValue(value: string | number) {
+    if (typeof value === 'string') {
+        console.log(value.toUpperCase());
+    } else {
+        console.log(value);
+    }
+}
+```
+Pitfall: Redundant type annotations.
+Bad Example:
+```typescript
+let name: string = "John"; // Type inference makes this unnecessary
+```
