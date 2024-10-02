@@ -13,4 +13,4 @@ You can read [the complete article](https://dev.to/codewithahsan/ai-assistant-fo
 - Go to [https://colab.research.google.com/](https://colab.research.google.com/)
 - Click `File` > `Open notebook`
 - Choose the download file
-- Follow the rest of the [article](https://dev.to/codewithahsan/ai-assistant-for-company-wide-software-best-practices-with-gemini-llamaindex-rag-nmm-temp-slug-8718691) :)
+- Follow the rest of the [article](https://dev.to/codewithahsan/ai-assistant-for-company-wide-software-best-practices-with-gemini-llamaindex-rag-5180) :)
